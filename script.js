@@ -122,4 +122,55 @@ function setupUserType() {
 }
 window.addEventListener('DOMContentLoaded', setupUserType);
 
+// Inline registration form toggle (Donor / Seeker)
+function setupInlineRegistration() {
+	const showDonor = document.getElementById('show-donor-form');
+	const showSeeker = document.getElementById('show-seeker-form');
+	const formDonor = document.getElementById('form-donor');
+	const formSeeker = document.getElementById('form-seeker');
+
+	// Ensure forms are hidden by default on load
+	if (formDonor) { formDonor.hidden = true; formDonor.setAttribute('aria-hidden', 'true'); }
+	if (formSeeker) { formSeeker.hidden = true; formSeeker.setAttribute('aria-hidden', 'true'); }
+
+	function openForm(form) {
+		if (!form) return;
+		// hide both first
+		[formDonor, formSeeker].forEach(f => {
+			if (f && f !== form) {
+				f.hidden = true; f.setAttribute('aria-hidden', 'true');
+			}
+		});
+		form.hidden = false; form.setAttribute('aria-hidden', 'false');
+		const first = form.querySelector('input, select, textarea');
+		if (first) first.focus();
+		// scroll into view smoothly
+		form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+	}
+
+	if (showDonor) showDonor.addEventListener('click', (e) => { e.preventDefault(); openForm(formDonor); });
+	if (showSeeker) showSeeker.addEventListener('click', (e) => { e.preventDefault(); openForm(formSeeker); });
+
+	// close inline handlers (buttons with data-close-inline)
+	document.addEventListener('click', (e) => {
+		const btn = e.target.closest('[data-close-inline]');
+		if (!btn) return;
+		const id = btn.getAttribute('data-close-inline');
+		const f = document.getElementById(id);
+		if (f) { f.hidden = true; f.setAttribute('aria-hidden', 'true'); }
+	});
+
+	// Optional: when inline forms submit, prevent default and show a temporary message
+	[formDonor, formSeeker].forEach(f => {
+		if (!f) return;
+		f.addEventListener('submit', (ev) => {
+			ev.preventDefault();
+			// simple success UX: hide form and show alert (could be replaced by real submission)
+			f.hidden = true; f.setAttribute('aria-hidden', 'true');
+			alert('Thank you! Your registration request has been received.');
+		});
+	});
+}
+window.addEventListener('DOMContentLoaded', setupInlineRegistration);
+
 
