@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>Find Blood Donors — BloodDonate</title>
+    <link rel="stylesheet" href="/BloodDonation/styles.css" />
+</head>
+<body>
+    <!-- Navbar (match bloodseeker.html) -->
+    <header class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="logo">Blood<span>Donate</span></div>
+            <nav class="nav-links" aria-label="Main navigation">
+                <a href="/BloodDonation/index.html">Home</a>
+                <a href="/BloodDonation/index.html#about">About Us</a>
+                <a href="/BloodDonation/index.html#footer-contact">Contact Us</a>
+                <a href="/BloodDonation/components/bloodseeker/blooddonor.html">Donor</a>
+            </nav>
+        </div>
+    </header>
+
+    <main style="padding-top:78px;">
+        <section class="section" style="max-width:1100px;margin:0 auto;padding:2rem 1rem;">
+            <h1 style="color:#c40024; margin-bottom:0.6rem;">Find Blood Donors Near You</h1>
+            <p style="color:#444; margin-bottom:1rem;">Search donors by blood group and city. Click a donor to view full details and contact information.</p>
+
+            <div class="search-row" style="display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:1rem;">
+                <label style="flex:1 1 220px;">
+                    Blood Group
+                    <select id="filter-blood" style="width:100%;padding:.6rem;border-radius:8px;border:1px solid #ddd;">
+                        <option value="">Any</option>
+                        <option>A+</option>
+                        <option>A-</option>
+                        <option>B+</option>
+                        <option>B-</option>
+                        <option>AB+</option>
+                        <option>AB-</option>
+                        <option>O+</option>
+                        <option>O-</option>
+                    </select>
+                </label>
+
+                <label style="flex:1 1 220px;">
+                    City
+                    <input id="filter-city" placeholder="Any city" style="width:100%;padding:.6rem;border-radius:8px;border:1px solid #ddd;" />
+                </label>
+
+                <label style="flex:2 1 320px;">
+                    Search Name or Contact
+                    <input id="filter-term" placeholder="Search by name or number" style="width:100%;padding:.6rem;border-radius:8px;border:1px solid #ddd;" />
+                </label>
+
+                <div style="display:flex;align-items:flex-end;gap:.6rem;">
+                    <button id="btn-search" class="submit-btn" style="min-width:120px;padding:.6rem 1rem;">Search</button>
+                    <button id="btn-reset" class="submit-btn secondary" style="min-width:120px;padding:.6rem 1rem;">Reset</button>
+                </div>
+            </div>
+
+            <div id="donor-count" style="margin-bottom:.8rem;color:#444;font-weight:600;"></div>
+
+            <div id="donor-list" class="campaign-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1rem;">
+                <!-- donor cards inserted here -->
+            </div>
+        </section>
+
+        <!-- Campaigns Section (copied structure from main site) -->
+        <section id="campaigns" class="campaigns section" aria-labelledby="campaigns-heading">
+            <div class="campaigns-inner">
+                <h2 id="campaigns-heading">Blood Donation Campaign Events</h2>
+                <p class="campaigns-intro">Join our upcoming donation drives — check dates and times, and bring a friend.</p>
+
+                <div class="campaign-grid">
+                    <article class="campaign-card">
+                        <div class="campaign-media">
+                            <img src="/BloodDonation/images/donation4.jpg" alt="Community blood donation drive" />
+                        </div>
+                        <div class="campaign-body">
+                            <h3>City Center Drive</h3>
+                            <p>Free screening and refreshments. Walk-ins welcome.</p>
+                        </div>
+                    </article>
+                    <article class="campaign-card">
+                        <div class="campaign-media">
+                            <img src="/BloodDonation/images/donation5.webp" alt="Hospital blood donation event" />
+                        </div>
+                        <div class="campaign-body">
+                            <h3>Hospital Partnership Event</h3>
+                            <p>Scheduled appointments to ensure safe, efficient collection.</p>
+                        </div>
+                    </article>
+                    <article class="campaign-card">
+                        <div class="campaign-media">
+                            <img src="/BloodDonation/images/donation6.jpg" alt="Mobile blood donation unit" />
+                        </div>
+                        <div class="campaign-body">
+                            <h3>Mobile Unit Visit</h3>
+                            <p>Our mobile unit will visit neighborhoods — book a slot.</p>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Donor details modal -->
+    <div class="modal" id="modal-donor" role="dialog" aria-modal="true" aria-labelledby="donor-title" hidden>
+        <div class="modal-backdrop" data-close></div>
+        <div class="modal-content">
+            <button class="modal-close" aria-label="Close" data-close>&times;</button>
+            <h3 id="donor-title" style="text-align:center;color:#c40024;">Donor Details</h3>
+            <div id="donor-details" style="display:grid;gap:.5rem;">
+                <!-- details injected here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer (reuse main site's footer) -->
+    <footer id="footer-contact" class="site-footer" aria-labelledby="footer-heading">
+        <div class="footer-top">
+            <div class="footer-text">
+                <h3 id="footer-heading">Join the Lifesaving Network</h3>
+                <p>Together we can make sure that when a call for blood comes, the answer is immediate. Register, reach out, or simply start a conversation. Your involvement today protects a life tomorrow.</p>
+                <div class="socials" aria-label="Social media links">
+                    <a href="#" class="social whatsapp" aria-label="WhatsApp" title="WhatsApp">...</a>
+                    <a href="#" class="social instagram" aria-label="Instagram" title="Instagram">...</a>
+                    <a href="#" class="social tiktok" aria-label="TikTok" title="TikTok">...</a>
+                    <a href="#" class="social linkedin" aria-label="LinkedIn" title="LinkedIn">...</a>
+                </div>
+            </div>
+            <form class="contact-form" action="#" method="post" aria-label="Contact form">
+                <h3>Contact Us</h3>
+                <label>Full Name
+                    <input type="text" name="name" required placeholder="Your name" />
+                </label>
+                <label>Mobile Number
+                    <input type="tel" name="mobile" required pattern="[+0-9\s-]{7,}" placeholder="e.g. +1 555 123 4567" />
+                </label>
+                <label>Email
+                    <input type="email" name="email" required placeholder="you@example.com" />
+                </label>
+                <button type="submit" class="submit-btn">Submit</button>
+            </form>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 BloodDonate. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="/BloodDonation/script.js"></script>
+    <script>
+    // Page-specific donor logic
+    (function(){
+        const donorList = document.getElementById('donor-list');
+        const donorCount = document.getElementById('donor-count');
+        const filterBlood = document.getElementById('filter-blood');
+        const filterCity = document.getElementById('filter-city');
+        const filterTerm = document.getElementById('filter-term');
+        const btnSearch = document.getElementById('btn-search');
+        const btnReset = document.getElementById('btn-reset');
+        const modal = document.getElementById('modal-donor');
+        const details = document.getElementById('donor-details');
+
+        let donors = [];
+
+        async function loadDonors(){
+            donorList.innerHTML = '<p style="grid-column:1/-1;color:#666;">Loading donors…</p>';
+            donorCount.textContent = '';
+            try{
+                const res = await fetch('/BloodDonation/get_donors.php', {cache: 'no-store'});
+                if(!res.ok) throw new Error('no-api');
+                donors = await res.json();
+                if(!Array.isArray(donors)) donors = [];
+            }catch(err){
+                // show error message and stop
+                donorList.innerHTML = '<p style="grid-column:1/-1;color:#c40024;font-weight:700;">Unable to load donors from server.</p>';
+                donorCount.textContent = '';
+                console.error('Failed to load donors:', err);
+                return;
+            }
+            if(donors.length === 0){
+                donorList.innerHTML = '<p style="grid-column:1/-1;color:#666;">No registered donors found.</p>';
+                donorCount.textContent = '0 donor(s) found';
+                return;
+            }
+            renderDonors(donors);
+        }
+
+        function renderDonors(list){
+            donorList.innerHTML = '';
+            donorCount.textContent = list.length + ' donor(s) found';
+            list.forEach(d => {
+                const card = document.createElement('article');
+                card.className = 'campaign-card';
+                card.innerHTML = `
+                    <div class="campaign-media"><img src="/BloodDonation/images/donation1.jpg" alt="donor" /></div>
+                    <div class="campaign-body">
+                        <h3>${escapeHtml(d.firstName + ' ' + (d.lastName||''))}</h3>
+                        <p><strong>Blood:</strong> ${escapeHtml(d.blood_group || '')} &nbsp; <strong>City:</strong> ${escapeHtml(d.city || '')}</p>
+                        <p><strong>Contact:</strong> ${escapeHtml(d.contact || d.whatsapp || '')}</p>
+                        <div style="margin-top:.6rem;"><button class="submit-btn" data-id="${d.id}">View Details</button></div>
+                    </div>
+                `;
+                donorList.appendChild(card);
+            });
+        }
+
+        function escapeHtml(str){ return String(str||'').replace(/[&<>\"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":"&#39;"})[s]); }
+
+        function applyFilters(){
+            const bg = filterBlood.value.trim();
+            const city = filterCity.value.trim().toLowerCase();
+            const term = filterTerm.value.trim().toLowerCase();
+            const filtered = donors.filter(d => {
+                if(bg && (d.blood_group||'').toLowerCase() !== bg.toLowerCase()) return false;
+                if(city && ((d.city||'').toLowerCase().indexOf(city)===-1)) return false;
+                if(term){
+                    const hay = (d.firstName+' '+(d.lastName||'')+' '+(d.contact||'')+' '+(d.city||'')).toLowerCase();
+                    if(hay.indexOf(term)===-1) return false;
+                }
+                return true;
+            });
+            renderDonors(filtered);
+        }
+
+        btnSearch.addEventListener('click', (e)=>{ e.preventDefault(); applyFilters(); });
+        btnReset.addEventListener('click', (e)=>{ e.preventDefault(); filterBlood.value=''; filterCity.value=''; filterTerm.value=''; renderDonors(donors); });
+
+        donorList.addEventListener('click', (e)=>{
+            const btn = e.target.closest('button[data-id]');
+            if(!btn) return;
+            const id = btn.getAttribute('data-id');
+            const donor = donors.find(x=>String(x.id)===String(id));
+            if(!donor) return;
+            showDonorDetails(donor);
+        });
+
+        function showDonorDetails(d){
+            details.innerHTML = `
+                <p><strong>Name:</strong> ${escapeHtml(d.firstName+' '+(d.lastName||''))}</p>
+                <p><strong>Blood Group:</strong> ${escapeHtml(d.blood_group||'')}</p>
+                <p><strong>Age:</strong> ${escapeHtml(d.age||'')}</p>
+                <p><strong>NIC/ID:</strong> ${escapeHtml(d.nic||'')}</p>
+                <p><strong>Contact:</strong> ${escapeHtml(d.contact||'')}</p>
+                <p><strong>WhatsApp:</strong> ${escapeHtml(d.whatsapp||'')}</p>
+                <p><strong>Email:</strong> ${escapeHtml(d.email||'')}</p>
+                <p><strong>City:</strong> ${escapeHtml(d.city||'')}</p>
+                <p><strong>Street:</strong> ${escapeHtml(d.street||'')}</p>
+            `;
+            // open modal
+            modal.hidden = false; modal.setAttribute('aria-hidden','false'); document.body.classList.add('no-scroll');
+            setTimeout(()=>{ const first = modal.querySelector('button, a, input'); if(first) first.focus(); },80);
+        }
+
+        // initial load
+        loadDonors();
+    })();
+    </script>
+</body>
+</html>

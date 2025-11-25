@@ -12,8 +12,16 @@ a { text-decoration: none; }
 .nav-links { display: flex; gap: 1.2rem; align-items: center; }
 .nav-links a { font-size: .95rem; padding: .5rem .85rem; color: #444; border-radius: 4px; transition: background .25s, color .25s; }
 .nav-links a:hover { background: #c40024; color: #fff; }
-.nav-links .btn-primary { background: #c40024; color: #fff; font-weight: 600; }
-.nav-links .btn-primary:hover { background: #a0001d; }
+.nav-links .btn-primary { 
+	background: #c40024; 
+	color: #fff; 
+	font-weight: 700; 
+	padding: .5rem .9rem; 
+	border-radius: 10px; 
+	box-shadow: 0 6px 18px -8px rgba(196,0,36,0.35);
+	border: 2px solid rgba(196,0,36,0.08);
+}
+.nav-links .btn-primary:hover { background: #a0001d; transform: translateY(-2px); }
 
 /* Hero */
 .hero { position: relative; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding-top: 70px; /* offset for fixed nav */ overflow: hidden; }
@@ -197,10 +205,10 @@ main p { max-width: 700px; }
 /* Modal */
 body.no-scroll { overflow: hidden; }
 .modal[hidden] { display: none; }
-.modal { position: fixed; inset: 0; z-index: 2000; display: grid; place-items: center; }
-.modal-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(2px); }
-.modal-content { position: relative; width: min(560px, 92%); background: #fff; border-radius: 16px; box-shadow: 0 24px 60px -12px rgba(0,0,0,0.5); padding: 1.2rem; z-index: 1; max-height: calc(100vh - 120px); overflow: auto; }
-.modal-close { z-index: 3; }
+.modal { position: fixed; inset: 0; z-index: 9999; display: grid; place-items: center; }
+.modal-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.5); z-index: 9998; /* backdrop behind modal content */ }
+.modal-content { position: relative; width: min(640px, 94%); background: #fff; border-radius: 14px; box-shadow: 0 30px 80px -20px rgba(0,0,0,0.55); padding: 1.6rem 1.8rem; z-index: 9999; max-height: calc(100vh - 120px); overflow: auto; pointer-events: auto; }
+.modal-close { z-index: 3; font-size: 1.6rem; color: #c40024; background: transparent; border: none; }
 .modal-close { position: absolute; top: 8px; right: 10px; border: none; background: transparent; color: #c40024; font-size: 1.8rem; line-height: 1; cursor: pointer; }
 .auth-form { display: grid; gap: 1rem; }
 .auth-form label { display: block; font-weight: 600; color: #333; font-size: .92rem; }
@@ -213,7 +221,7 @@ body.no-scroll { overflow: hidden; }
 @media (max-width: 560px) { .field-row { grid-template-columns: 1fr; } }
 .password-field { position: relative; }
 .password-field input { padding-right: 48px; }
-.toggle-password { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: transparent; border: none; cursor: pointer; color: #c40024; padding: 6px; height: 32px; width: 32px; display: inline-flex; align-items: center; justify-content: center; padding-top: 30px; }
+.toggle-password { position: absolute; right: 10px; top: 65%; transform: translateY(-50%); background: transparent; border: none; cursor: pointer; color: #c40024; padding: 6px; height: 32px; width: 32px; display: inline-flex; align-items: center; justify-content: center; }
 .toggle-password .eye-off { display: none; }
 /* swap icons when button has showing class */
 .toggle-password.showing .eye { display: none; }

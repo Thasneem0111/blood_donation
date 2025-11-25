@@ -66,12 +66,19 @@ function openModal(id) {
 	const modal = document.getElementById(id);
 	if (!modal) return;
 	modal.hidden = false;
+	modal.setAttribute('aria-hidden', 'false');
 	document.body.classList.add('no-scroll');
+	// focus the first form control inside the modal for accessibility
+	setTimeout(() => {
+		const first = modal.querySelector('input, select, textarea, button');
+		if (first) first.focus();
+	}, 80);
 }
 function closeModal(el) {
 	const modal = el.closest('.modal');
 	if (!modal) return;
 	modal.hidden = true;
+	modal.setAttribute('aria-hidden', 'true');
 	if (!document.querySelector('.modal:not([hidden])')) {
 		document.body.classList.remove('no-scroll');
 	}
@@ -89,11 +96,42 @@ document.addEventListener('click', (e) => {
 	const a = e.target.closest('.switch-to-signup, .switch-to-signin');
 	if (!a) return;
 	e.preventDefault();
-	const toSignup = a.classList.contains('switch-to-signup');
-	const from = document.getElementById(toSignup ? 'modal-signin' : 'modal-signup');
-	const to = document.getElementById(toSignup ? 'modal-signup' : 'modal-signin');
-	if (from) from.hidden = true;
-	if (to) to.hidden = false;
+	// If user clicks "Don't have an account? Sign Up" inside sign-in modal,
+	// close the sign-in modal and navigate to the interactive register section.
+	if (a.classList.contains('switch-to-signup')) {
+		const signinModal = document.getElementById('modal-signin');
+		if (signinModal) {
+			signinModal.hidden = true;
+			signinModal.setAttribute('aria-hidden', 'true');
+		}
+		// ensure scrolling is restored when leaving a modal to the page
+		document.body.classList.remove('no-scroll');
+		// Scroll to interactive register section and focus first input
+		const section = document.getElementById('interactive-register');
+		if (section) {
+			section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+			// optionally open donor form after scrolling for quicker registration
+			const donorForm = document.getElementById('form-donor');
+			if (donorForm) {
+				// show the donor form so user can register immediately
+				donorForm.hidden = false; donorForm.setAttribute('aria-hidden', 'false');
+				const first = donorForm.querySelector('input, select, textarea');
+				if (first) first.focus();
+			}
+		}
+		return;
+	}
+
+	// If clicking "Already have an account? Sign In" inside sign-up modal, show signin modal
+	if (a.classList.contains('switch-to-signin')) {
+		const from = document.getElementById('modal-signup');
+		const to = document.getElementById('modal-signin');
+		if (from) { from.hidden = true; from.setAttribute('aria-hidden', 'true'); }
+		if (to) { to.hidden = false; to.setAttribute('aria-hidden', 'false'); }
+		// ensure page remains locked (modal visible)
+		document.body.classList.add('no-scroll');
+		return;
+	}
 });
 
 // Password toggle
@@ -160,17 +198,89 @@ function setupInlineRegistration() {
 		if (f) { f.hidden = true; f.setAttribute('aria-hidden', 'true'); }
 	});
 
-	// Optional: when inline forms submit, prevent default and show a temporary message
+	// When inline forms submit, POST to register.php and handle response
 	[formDonor, formSeeker].forEach(f => {
 		if (!f) return;
-		f.addEventListener('submit', (ev) => {
+		f.addEventListener('submit', async (ev) => {
 			ev.preventDefault();
-			// simple success UX: hide form and show alert (could be replaced by real submission)
-			f.hidden = true; f.setAttribute('aria-hidden', 'true');
-			alert('Thank you! Your registration request has been received.');
+			const data = new FormData(f);
+			try {
+				const res = await fetch('register.php', { method: 'POST', body: data });
+				const json = await res.json();
+				// show bootstrap alert near the form
+				showFormAlert(f, json.success ? 'success' : 'danger', json.message || 'Unexpected response');
+				if (json.success && json.redirect) {
+					// short delay then redirect and replace history so back doesn't return to the form
+					setTimeout(() => { window.location.replace(json.redirect); }, 1400);
+				}
+				if (!json.success) {
+					// keep form open for correction
+				} else {
+					// hide form on success to avoid duplicate submissions
+					f.hidden = true; f.setAttribute('aria-hidden', 'true');
+				}
+			} catch (err) {
+				showFormAlert(f, 'danger', 'Network error. Please try again.');
+				console.error(err);
+			}
 		});
 	});
 }
 window.addEventListener('DOMContentLoaded', setupInlineRegistration);
+
+// Sign-up modal submission (the main sign up form)
+document.addEventListener('submit', async (e) => {
+	const form = e.target.closest('#form-signup');
+	if (!form) return;
+	e.preventDefault();
+	const data = new FormData(form);
+	try {
+		const res = await fetch('register.php', { method: 'POST', body: data });
+		const json = await res.json();
+		// show an alert inside the modal
+		const modal = document.getElementById('modal-signup');
+		showFormAlert(modal ? modal.querySelector('.modal-content') : form, json.success ? 'success' : 'danger', json.message || 'Unexpected response');
+		if (json.success && json.redirect) {
+			setTimeout(() => { window.location.replace(json.redirect); }, 1400);
+		}
+	} catch (err) {
+		showFormAlert(form, 'danger', 'Network error. Please try again.');
+		console.error(err);
+	}
+});
+
+// Sign-in modal submission: send email to login.php which responds with redirect
+document.addEventListener('submit', async (e) => {
+    const form = e.target.closest('#form-signin');
+    if (!form) return;
+    e.preventDefault();
+    const data = new FormData(form);
+    try {
+        const res = await fetch('login.php', { method: 'POST', body: data });
+        const json = await res.json();
+        const modal = document.getElementById('modal-signin');
+        showFormAlert(modal ? modal.querySelector('.modal-content') : form, json.success ? 'success' : 'danger', json.message || 'Unexpected response');
+        if (json.success && json.redirect) {
+			setTimeout(() => { window.location.replace(json.redirect); }, 1000);
+        }
+    } catch (err) {
+        showFormAlert(form, 'danger', 'Network error. Please try again.');
+        console.error(err);
+    }
+});
+
+function showFormAlert(container, type, message) {
+	if (!container) container = document.body;
+	// remove any previous alerts in this container
+	const prev = container.querySelector('.form-alert');
+	if (prev) prev.remove();
+	const div = document.createElement('div');
+	div.className = `form-alert alert alert-${type} alert-dismissible fade show`;
+	div.role = 'alert';
+	div.innerHTML = `${message} <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>`;
+	container.insertBefore(div, container.firstChild);
+	// auto remove after 4s
+	setTimeout(() => { div.classList.remove('show'); div.remove(); }, 5000);
+}
 
 
