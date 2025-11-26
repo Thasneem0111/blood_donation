@@ -228,3 +228,20 @@ body.no-scroll { overflow: hidden; }
 .toggle-password.showing .eye-off { display: inline; }
 .blood-group { margin-top: .4rem; }
 
+/* Profile modal specific styles */
+.profile-modal .modal-content { max-width: 720px; padding: 2rem; }
+.profile-modal h3 { color: #c40024; margin-bottom: .6rem; text-align: center; }
+.profile-modal p { color: #444; margin-bottom: 1rem; }
+.profile-modal .email-row { margin-bottom: .6rem; }
+.profile-modal .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; margin-bottom: .6rem; }
+.profile-modal label { display: block; font-weight:600; color:#333; font-size:.95rem; }
+.profile-modal input { width:100%; padding:.6rem .8rem; border-radius:8px; border:1px solid #ddd; }
+.profile-modal #profile-form { background:#fff; padding:1rem; border-radius:10px; }
+.profile-modal .modal-content .submit-btn { width: auto; min-width: 160px; }
+.profile-modal .actions { display:flex; gap:.8rem; justify-content: space-between; margin-top:1rem; }
+
+@media (max-width: 620px) {
+	.profile-modal .field-row { grid-template-columns: 1fr; }
+	.profile-modal .actions { flex-direction: column; }
+}
+

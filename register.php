@@ -2,6 +2,9 @@
 header('Content-Type: application/json; charset=utf-8');
 require_once __DIR__ . '/db.php';
 
+// start session to sign-in user immediately after register
+if (session_status() === PHP_SESSION_NONE) session_start();
+
 // Only accept POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
@@ -56,20 +59,22 @@ if ($userType === 'donor') {
     $redirect = 'components/bloodseeker/bloodseeker.html';
 }
 
-// Check if email already exists in target table (uniqueness per table)
-$stmt = $mysqli->prepare("SELECT id FROM {$table} WHERE email = ? LIMIT 1");
-if (!$stmt) {
-    echo json_encode(['success' => false, 'message' => 'Database error (prepare)']);
-    exit;
+// Check if email already exists in either table (prevent duplicate registration across types)
+// simpler: run two checks
+$stmt = $mysqli->prepare("SELECT id FROM blood_donor WHERE email = ? LIMIT 1");
+if ($stmt) {
+    $stmt->bind_param('s', $email);
+    $stmt->execute(); $stmt->store_result();
+    if ($stmt->num_rows > 0) { echo json_encode(['success' => false, 'message' => 'Email already registered']); exit; }
+    $stmt->close();
 }
-$stmt->bind_param('s', $email);
-$stmt->execute();
-$stmt->store_result();
-if ($stmt->num_rows > 0) {
-    echo json_encode(['success' => false, 'message' => 'Email already registered for this user type']);
-    exit;
+$stmt2 = $mysqli->prepare("SELECT id FROM bloodseeker WHERE email = ? LIMIT 1");
+if ($stmt2) {
+    $stmt2->bind_param('s', $email);
+    $stmt2->execute(); $stmt2->store_result();
+    if ($stmt2->num_rows > 0) { echo json_encode(['success' => false, 'message' => 'Email already registered']); exit; }
+    $stmt2->close();
 }
-$stmt->close();
 
 // Hash password
 $hash = password_hash($password, PASSWORD_DEFAULT);
@@ -91,6 +96,9 @@ if (!$ins) {
 }
 
 if ($ins->execute()) {
+    // set session so user is treated as logged in immediately
+    $_SESSION['email'] = $email;
+    $_SESSION['userType'] = $userType; // 'donor' or 'seeker'
     echo json_encode(['success' => true, 'message' => 'Registration successful', 'redirect' => $redirect]);
     exit;
 } else {

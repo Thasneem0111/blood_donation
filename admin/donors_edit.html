@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Edit Donor</title><link rel="stylesheet" href="/BloodDonation/styles.css"><style>.form{max-width:720px;margin:1rem;padding:1rem;background:#fff;border-radius:8px}</style></head><body>
+  <div style="padding:1rem;"><a href="donors.html">← Back</a><h2 id="title">Create Donor</h2>
+    <form id="donor-form" class="form">
+      <input type="hidden" name="id" id="id" />
+      <label>First Name<input name="first_name" id="first_name" /></label>
+      <label>Last Name<input name="last_name" id="last_name" /></label>
+      <label>Email<input name="email" id="email" type="email" /></label>
+      <label>City<input name="city" id="city" /></label>
+      <label>Contact<input name="contact" id="contact" /></label>
+      <label>Password<input name="password" id="password" type="password" /></label>
+      <div style="margin-top:.6rem;"><button class="submit-btn" id="save">Save</button></div>
+    </form>
+  </div>
+  <script>
+  async function load(id){ if(!id) return; const res=await fetch('/BloodDonation/admin/admin_donor_api.php?id='+encodeURIComponent(id)); const b=await res.json(); if(b.donor){ document.getElementById('title').textContent='Edit Donor'; document.getElementById('id').value=b.donor.id; document.getElementById('first_name').value=b.donor.first_name||''; document.getElementById('last_name').value=b.donor.last_name||''; document.getElementById('email').value=b.donor.email||''; document.getElementById('city').value=b.donor.city||''; document.getElementById('contact').value=b.donor.contact||''; } }
+  document.addEventListener('DOMContentLoaded', ()=>{ const p=new URLSearchParams(location.search); const id=p.get('id'); if(id) load(id); });
+  document.getElementById('donor-form').addEventListener('submit', async (e)=>{ e.preventDefault(); const fd=new FormData(e.target); const res=await fetch('/BloodDonation/admin/admin_donor_api.php',{method:'POST',body:fd}); const b=await res.json(); if(b.success){ alert('Saved'); location.href='donors.html'; } else alert(b.message||b.error||'Failed'); });
+  </script>
+</body></html>

@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Admin — Notifications</title>
+  <link rel="stylesheet" href="/BloodDonation/styles.css">
+  <style>.container{padding:1rem}.notif{padding:.6rem;border-bottom:1px solid #eee}</style>
+</head>
+<body>
+  <div style="padding:1rem;display:flex;align-items:center;gap:1rem;"><a href="dashboard.html">← Back</a><h2>Notifications</h2><div style="margin-left:auto;"><button id="create-notif" class="submit-btn">Create</button></div></div>
+  <div class="container"><div id="notifs"></div></div>
+  <script>
+  async function load(){ const res=await fetch('/BloodDonation/admin/admin_notifications_api.php'); const b=await res.json(); const el=document.getElementById('notifs'); el.innerHTML=''; (b.notifications||[]).forEach(n=>{ const d=document.createElement('div'); d.className='notif'; d.innerHTML=`<strong>${n.title}</strong><div>${n.message}</div><small>${n.created_at||''}</small>`; el.appendChild(d); }); }
+  document.getElementById('create-notif')?.addEventListener('click', ()=>{ const title=prompt('Title'); if(!title) return; const message=prompt('Message')||''; fetch('/BloodDonation/admin/admin_notifications_api.php',{method:'POST',body:new URLSearchParams({title,message})}).then(()=>load()); });
+  load();
+  </script>
+</body>
+</html>

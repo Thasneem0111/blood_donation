@@ -1,3 +1,4 @@
+<?php require_once __DIR__ . '/admin_auth.php'; ?>
 <!doctype html>
 <html lang="en">
 <head>
@@ -6,7 +7,7 @@
   <title>Admin Dashboard — BloodDonate</title>
   <link rel="stylesheet" href="/BloodDonation/styles.css">
   <style>
-    /* admin specific */
+    /* admin specific (same as HTML version) */
     .admin-wrap { display:flex; min-height:100vh; }
     .admin-sidebar { width:260px; background:#1a0b0d; color:#fff; padding:1rem; }
     .admin-sidebar .nav-item { display:flex; align-items:center; gap:.75rem; padding:.6rem .5rem; border-radius:8px; color:#fff; margin-bottom:.25rem; cursor:pointer; }
@@ -28,11 +29,11 @@
   <div class="admin-wrap">
     <aside class="admin-sidebar" role="navigation">
       <h3 style="margin-bottom:1rem;">Admin</h3>
-      <div class="nav-item active" data-href="dashboard.html">🏠 Dashboard</div>
-      <a class="nav-item" href="seekers.html">🧾 Blood Seeker</a>
-      <a class="nav-item" href="donors.html">🩸 Blood Donor</a>
-      <a class="nav-item" href="notifications.html">🔔 Notifications</a>
-      <a class="nav-item" href="settings.html">⚙️ Settings</a>
+      <a class="nav-item active" href="dashboard.php">🏠 Dashboard</a>
+      <a class="nav-item" href="seekers.php">🧾 Blood Seeker</a>
+      <a class="nav-item" href="donors.php">🩸 Blood Donor</a>
+      <a class="nav-item" href="notifications.php">🔔 Notifications</a>
+      <a class="nav-item" href="settings.php">⚙️ Settings</a>
       <a class="nav-item" href="logout.php">🚪 Logout</a>
     </aside>
 

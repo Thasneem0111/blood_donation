@@ -210,6 +210,13 @@ function setupInlineRegistration() {
 				// show bootstrap alert near the form
 				showFormAlert(f, json.success ? 'success' : 'danger', json.message || 'Unexpected response');
 				if (json.success && json.redirect) {
+					// store current user email for profile auto-load
+					const formData = data; // FormData
+					const userEmail = formData.get('donorEmail') || formData.get('seekerEmail') || formData.get('email') || formData.get('donorEmail') || '';
+					if (userEmail) {
+						localStorage.setItem('userEmail', userEmail);
+						localStorage.setItem('showProfileOnNextLoad', '1');
+					}
 					// short delay then redirect and replace history so back doesn't return to the form
 					setTimeout(() => { window.location.replace(json.redirect); }, 1400);
 				}
@@ -241,6 +248,14 @@ document.addEventListener('submit', async (e) => {
 		const modal = document.getElementById('modal-signup');
 		showFormAlert(modal ? modal.querySelector('.modal-content') : form, json.success ? 'success' : 'danger', json.message || 'Unexpected response');
 		if (json.success && json.redirect) {
+			try{
+				const formData = data;
+				const userEmail = formData.get('email') || formData.get('donorEmail') || formData.get('seekerEmail') || '';
+				if (userEmail) {
+					localStorage.setItem('userEmail', userEmail);
+					localStorage.setItem('showProfileOnNextLoad', '1');
+				}
+			} catch(e) {}
 			setTimeout(() => { window.location.replace(json.redirect); }, 1400);
 		}
 	} catch (err) {
@@ -260,9 +275,16 @@ document.addEventListener('submit', async (e) => {
         const json = await res.json();
         const modal = document.getElementById('modal-signin');
         showFormAlert(modal ? modal.querySelector('.modal-content') : form, json.success ? 'success' : 'danger', json.message || 'Unexpected response');
-        if (json.success && json.redirect) {
-			setTimeout(() => { window.location.replace(json.redirect); }, 1000);
-        }
+		if (json.success && json.redirect) {
+			try{
+				const userEmail = data.get('email') || '';
+				if (userEmail) {
+					localStorage.setItem('userEmail', userEmail);
+					localStorage.setItem('showProfileOnNextLoad', '1');
+				}
+			} catch(e) {}
+				setTimeout(() => { window.location.replace(json.redirect); }, 1000);
+		}
     } catch (err) {
         showFormAlert(form, 'danger', 'Network error. Please try again.');
         console.error(err);
