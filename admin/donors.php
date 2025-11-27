@@ -8,12 +8,18 @@
   <style>table{width:100%;border-collapse:collapse} th,td{padding:.6rem;border-bottom:1px solid #eee}</style>
 </head>
 <body>
-  <div style="display:flex;align-items:center;gap:1rem;padding:1rem;"><a href="dashboard.php">← Back</a><h2>Donors</h2><div style="margin-left:auto;"><button id="create-donor" class="submit-btn">Create Donor</button></div></div>
-  <div style="padding:1rem;"><table id="donors-table"><thead><tr><th>ID</th><th>Name</th><th>Email</th><th>City</th><th>Contact</th><th>Actions</th></tr></thead><tbody></tbody></table></div>
-  <script>
-  async function load(){ const res=await fetch('/BloodDonation/admin/admin_donor_api.php?limit=200'); const b=await res.json(); const tb=document.querySelector('#donors-table tbody'); tb.innerHTML=''; (b.donors||[]).forEach(d=>{ const tr=document.createElement('tr'); tr.innerHTML=`<td>${d.id}</td><td>${d.first_name} ${d.last_name||''}</td><td>${d.email||''}</td><td>${d.city||''}</td><td>${d.contact||''}</td><td><button class="edit" data-id="${d.id}">Edit</button><button class="del" data-id="${d.id}">Delete</button></td>`; tb.appendChild(tr); }); }
-  document.addEventListener('click', async (e)=>{ if(e.target.matches('.del')){ if(!confirm('Delete donor?')) return; const id=e.target.dataset.id; await fetch('/BloodDonation/admin/admin_donor_api.php',{method:'DELETE',body:'id='+encodeURIComponent(id),headers:{'Content-Type':'application/x-www-form-urlencoded'}}); load(); } if(e.target.matches('.edit')){ location.href='donors_edit.php?id='+e.target.dataset.id; } if(e.target.id==='create-donor'){ location.href='donors_edit.php'; } });
-  load();
-  </script>
+  <div class="admin-wrap">
+    <?php include __DIR__ . '/_sidebar.php'; ?>
+
+    <main class="admin-main">
+      <div style="display:flex;align-items:center;gap:1rem;padding:1rem;"><a href="dashboard.php">← Back</a><h2>Donors</h2><div style="margin-left:auto;"><button id="create-donor" class="submit-btn">Create Donor</button></div></div>
+      <div style="padding:1rem;"><table id="donors-table"><thead><tr><th>ID</th><th>Name</th><th>Email</th><th>City</th><th>Contact</th><th>WhatsApp</th><th>Blood Group</th><th>Actions</th></tr></thead><tbody></tbody></table></div>
+    <script>
+    async function load(){ const res=await fetch('/BloodDonation/admin/admin_donor_api.php?limit=200'); const b=await res.json(); const tb=document.querySelector('#donors-table tbody'); tb.innerHTML=''; (b.donors||[]).forEach(d=>{ const tr=document.createElement('tr'); tr.innerHTML=`<td>${d.id}</td><td>${d.first_name} ${d.last_name||''}</td><td>${d.email||''}</td><td>${d.city||''}</td><td>${d.contact_number||d.contact||''}</td><td>${d.whatsapp_number||d.whatsapp||''}</td><td>${d.bloodgroup||d.blood_group||''}</td><td><button class="edit" data-id="${d.id}">Edit</button><button class="del" data-id="${d.id}">Delete</button></td>`; tb.appendChild(tr); }); }
+    document.addEventListener('click', async (e)=>{ if(e.target.matches('.del')){ if(!confirm('Delete donor?')) return; const id=e.target.dataset.id; await fetch('/BloodDonation/admin/admin_donor_api.php',{method:'DELETE',body:'id='+encodeURIComponent(id),headers:{'Content-Type':'application/x-www-form-urlencoded'}}); load(); } if(e.target.matches('.edit')){ location.href='donors_edit.php?id='+e.target.dataset.id; } if(e.target.id==='create-donor'){ location.href='donors_edit.php'; } });
+    load();
+    </script>
+    </main>
+  </div>
 </body>
 </html>

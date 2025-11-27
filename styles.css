@@ -245,3 +245,61 @@ body.no-scroll { overflow: hidden; }
 	.profile-modal .actions { flex-direction: column; }
 }
 
+/* Admin layout and sidebar styles (shared) */
+.admin-wrap { display: flex; min-height: 100vh; }
+.admin-sidebar { width: 260px; background: #1a0b0d; color: #fff; padding: 1rem; box-sizing: border-box; position: fixed; top: 0; left: 0; bottom: 0; overflow-y: auto; }
+.admin-sidebar h3 { margin: 0 0 1rem 0; font-size: 1.05rem; }
+.admin-sidebar .nav-item { display: flex; align-items: center; gap: .75rem; padding: .6rem .5rem; border-radius: 8px; color: #fff; margin-bottom: .25rem; cursor: pointer; transition: background .18s ease; }
+.admin-sidebar .nav-item:hover, .admin-sidebar .nav-item.active { background: #2a0d14; }
+.admin-main { margin-left: 260px; padding: 1.25rem; flex: 1; background: #fafafa; min-height: 100vh; }
+
+/* admin forms */
+.form { background: #fff; padding: 1rem; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,.06); max-width: 900px; }
+.form label { display: block; margin-bottom: .6rem; font-size: 14px; }
+.form input[type="text"], .form input[type="email"], .form input[type="number"], .form input[type="password"] { width: 100%; padding: .5rem; border: 1px solid #d1d5db; border-radius: 4px; }
+.field-row { display: flex; gap: 1rem; }
+.field-row label { flex: 1; }
+.actions { display: flex; gap: .6rem; }
+.submit-btn { background: #0ea5a4; color: #fff; border: none; padding: .5rem 1rem; border-radius: 6px; cursor: pointer; }
+.submit-btn:hover { opacity: .95; }
+
+/* Ensure consistent label/input sizing across admin create/edit/settings forms */
+.form .field-row label { display: flex; flex-direction: column; gap: .5rem; }
+.form label input, .form label select, .form label textarea { width: 100%; box-sizing: border-box; padding: .6rem .75rem; border: 1px solid #d1d5db; border-radius: 6px; background: #fff; }
+.form label input[type="tel"], .form label input[type="email"], .form label input[type="number"] { font-size: .95rem; }
+.form .help { font-size: .88rem; color: #6b7280; margin-top: .25rem; }
+
+/* Make single-column labels inside .form also stack inputs cleanly */
+.form > label { display: block; }
+.form > label input, .form > label select { width: 100%; }
+
+/* Admin table action buttons */
+.edit, .del, .btn-edit, .btn-delete { display: inline-block; padding: .45rem .6rem; border-radius: 6px; border: 0; cursor: pointer; font-size: .95rem; }
+.edit { background: #2563eb; color: #fff; margin-right: .8rem; }
+.del { background: #ef4444; color: #fff; }
+.edit:hover { opacity: .95; }
+.del:hover { opacity: .95; }
+
+/* Small tweaks for form appearance */
+.form label { font-weight: 600; color: #333; }
+.form .field-row { gap: 1.4rem; }
+.form .actions { justify-content: center; }
+.form .submit-btn { width: 100%; padding: .9rem 1rem; font-size: 1.05rem; border-radius: 8px; box-shadow: 0 8px 26px rgba(237,113,169,0.08); }
+
+/* Dashboard small helpers */
+.profile-icon { width:44px;height:44px;border-radius:50%;background:#fff;display:inline-flex;align-items:center;justify-content:center;border:1px solid #eee; }
+.metrics { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:1rem; margin-bottom:1rem; }
+.metric { background:#fff;padding:1rem;border-radius:10px;box-shadow:0 6px 18px rgba(0,0,0,0.06); }
+.lists { display:grid; grid-template-columns:1fr 1fr 1fr; gap:1rem; }
+.list-card { background:#fff;padding:1rem;border-radius:10px; box-shadow:0 6px 18px rgba(0,0,0,0.06); }
+.list-card h4 { margin-bottom:.6rem; }
+.small-list li { padding:.45rem 0; border-bottom:1px dashed #eee; }
+/* Numbered list styling for dashboard recents */
+.small-list.numbered { list-style: decimal; padding-left: 1.2rem; }
+.small-list.numbered li { padding: .6rem 0; }
+.small-list .muted { color: #6b7280; font-weight: 500; margin-left: 0.25rem; }
+.small-list .badge { display:inline-block; background:#f3f4f6; color:#111827; padding:2px 8px; border-radius:12px; font-size:.85rem; margin-left:.5rem; }
+
+@media(max-width:900px){ .admin-sidebar{display:none} .admin-main{margin-left:0} .lists{grid-template-columns:1fr} }
+
+

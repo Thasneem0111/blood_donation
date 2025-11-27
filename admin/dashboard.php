@@ -27,15 +27,7 @@
 </head>
 <body>
   <div class="admin-wrap">
-    <aside class="admin-sidebar" role="navigation">
-      <h3 style="margin-bottom:1rem;">Admin</h3>
-      <a class="nav-item active" href="dashboard.php">🏠 Dashboard</a>
-      <a class="nav-item" href="seekers.php">🧾 Blood Seeker</a>
-      <a class="nav-item" href="donors.php">🩸 Blood Donor</a>
-      <a class="nav-item" href="notifications.php">🔔 Notifications</a>
-      <a class="nav-item" href="settings.php">⚙️ Settings</a>
-      <a class="nav-item" href="logout.php">🚪 Logout</a>
-    </aside>
+    <?php include __DIR__ . '/_sidebar.php'; ?>
 
     <main class="admin-main">
       <div class="overview">
@@ -59,15 +51,15 @@
       <div class="lists">
         <div class="list-card">
           <h4>Recent Notifications</h4>
-          <ul id="recent-notifs" class="small-list"></ul>
+          <ol id="recent-notifs" class="small-list numbered"></ol>
         </div>
         <div class="list-card">
           <h4>Recent Donors</h4>
-          <ul id="recent-donors" class="small-list"></ul>
+          <ol id="recent-donors" class="small-list numbered"></ol>
         </div>
         <div class="list-card">
           <h4>Recent Seekers</h4>
-          <ul id="recent-seekers" class="small-list"></ul>
+          <ol id="recent-seekers" class="small-list numbered"></ol>
         </div>
       </div>
     </main>
@@ -90,18 +82,57 @@
   async function loadRecent(){
     try{
       const res = await fetch('/BloodDonation/admin/admin_get_recent.php');
-      const body = await res.json();
-      if(body.success){
-        const notUl = document.getElementById('recent-notifs'); notUl.innerHTML='';
-        (body.notifications||[]).forEach(n=>{ const li=document.createElement('li'); li.textContent = (n.title||'') + ' — ' + (n.message||''); notUl.appendChild(li); });
+      const body = await res.json().catch(()=>null) || {};
+      const notUl = document.getElementById('recent-notifs'); notUl.innerHTML='';
+      const dUl = document.getElementById('recent-donors'); dUl.innerHTML='';
+      const sUl = document.getElementById('recent-seekers'); sUl.innerHTML='';
 
-        const dUl = document.getElementById('recent-donors'); dUl.innerHTML='';
-        (body.donors||[]).forEach(d=>{ const li=document.createElement('li'); li.textContent = (d.first_name||'') + ' ' + (d.last_name||'') + ' — ' + (d.email||''); dUl.appendChild(li); });
-
-        const sUl = document.getElementById('recent-seekers'); sUl.innerHTML='';
-        (body.seekers||[]).forEach(s=>{ const li=document.createElement('li'); li.textContent = (s.first_name||'') + ' ' + (s.last_name||'') + ' — ' + (s.email||''); sUl.appendChild(li); });
+      function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"})[c]); }
+      function formatPhoneLinks(raw){
+        if(!raw) return '';
+        const digits = String(raw).replace(/\D/g,'');
+        const tel = 'tel:' + (String(raw).trim().replace(/[^+\d]/g,''));
+        const wa = digits ? 'https://wa.me/' + digits : null;
+        const telLink = '<a href="'+tel+'">'+escapeHtml(raw)+'</a>';
+        const waLink = wa ? ' <a target="_blank" rel="noopener" href="'+wa+'" title="WhatsApp">(WA)</a>' : '';
+        return telLink + waLink;
       }
-    }catch(e){ console.error(e); }
+
+      const notifs = body.notifications || [];
+      if(notifs.length === 0){
+        const li = document.createElement('li'); li.textContent = 'No recent notifications'; notUl.appendChild(li);
+      } else {
+        notifs.forEach(n=>{
+          const li=document.createElement('li');
+          const who = n.full_name || n.title || '';
+          const contact = n.contact_number || '';
+          li.innerHTML = (who ? '<strong>' + escapeHtml(who) + '</strong> ' : '') + (contact ? '<span class="muted"> ' + formatPhoneLinks(contact) + '</span>' : '');
+          notUl.appendChild(li);
+        });
+      }
+
+      const donors = body.donors || [];
+      if(donors.length === 0){ const li=document.createElement('li'); li.textContent = 'No recent donors'; dUl.appendChild(li); }
+      else donors.forEach(d=>{
+        const li=document.createElement('li');
+        const name = (d.first_name||'') + (d.last_name ? ' ' + d.last_name : '');
+        const contact = d.contact_number || d.whatsapp_number || '';
+        const bgHtml = d.bloodgroup ? ' <span class="badge">' + escapeHtml(d.bloodgroup) + '</span>' : '';
+        li.innerHTML = (name ? '<strong>' + escapeHtml(name) + '</strong> ' : '') + (contact ? '<span class="muted"> ' + formatPhoneLinks(contact) + '</span>' : '') + bgHtml;
+        dUl.appendChild(li);
+      });
+
+      const seekers = body.seekers || [];
+      if(seekers.length === 0){ const li=document.createElement('li'); li.textContent = 'No recent seekers'; sUl.appendChild(li); }
+      else seekers.forEach(s=>{
+        const li=document.createElement('li');
+        const name = (s.first_name||'') + (s.last_name ? ' ' + s.last_name : '');
+        const contact = s.contact_number || s.whatsapp_number || '';
+        li.innerHTML = (name ? '<strong>' + escapeHtml(name) + '</strong> ' : '') + (contact ? '<span class="muted"> ' + formatPhoneLinks(contact) + '</span>' : '');
+        sUl.appendChild(li);
+      });
+
+    }catch(e){ console.error(e); const notUl = document.getElementById('recent-notifs'); notUl.innerHTML='<li>Unable to load recents</li>'; }
   }
 
   document.addEventListener('DOMContentLoaded', ()=>{ loadCounts(); loadRecent(); });

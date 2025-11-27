@@ -45,6 +45,35 @@ function typeHeading() {
 }
 window.addEventListener('DOMContentLoaded', typeHeading);
 
+// Contact form submission handler (sends contact form data to notifications API)
+document.addEventListener('submit', async (e) => {
+	const form = e.target.closest('.contact-form');
+	if (!form) return;
+	e.preventDefault();
+	const data = new FormData(form);
+	// normalize fields
+	const payload = new URLSearchParams();
+	const name = data.get('name') || data.get('full_name') || '';
+	const mobile = data.get('mobile') || data.get('seekerContact') || data.get('contact') || '';
+	const email = data.get('email') || '';
+	payload.append('name', name);
+	payload.append('mobile', mobile);
+	payload.append('email', email);
+	try {
+		const res = await fetch('/BloodDonation/admin/admin_notifications_api.php', { method: 'POST', body: payload });
+		const json = await res.json();
+		if (json.success) {
+			showFormAlert(form, 'success', 'Thanks — we received your message.');
+			form.reset();
+		} else {
+			showFormAlert(form, 'danger', json.message || json.error || 'Submission failed');
+		}
+	} catch (err) {
+		showFormAlert(form, 'danger', 'Network error. Please try again.');
+		console.error(err);
+	}
+});
+
 // Reveal About blocks when they enter the viewport
 function setupSectionObserver() {
 	const items = document.querySelectorAll('.info-inner');
