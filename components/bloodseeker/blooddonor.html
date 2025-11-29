@@ -12,8 +12,8 @@
         <div class="nav-container">
             <div class="logo">Blood<span>Donate</span></div>
             <nav class="nav-links" aria-label="Main navigation">
-                <a href="#home">Home</a>
-                <a href="#about">About Us</a>
+                <a href="./bloodseeker.html">Home</a>
+                <a href="/BloodDonation/components/bloodseeker/bloodseeker.html#about">About Us</a>
                 <a href="#footer-contact">Contact Us</a>
                 <a href="/BloodDonation/components/bloodseeker/blooddonor.html">Donor</a>
                 <button id="btn-profile" title="Profile" aria-label="Profile" class="icon-button" style="background:none;border:none;margin-left:8px;">
@@ -140,7 +140,7 @@
     <div class="modal" id="modal-donor" role="dialog" aria-modal="true" aria-labelledby="donor-title" hidden>
         <div class="modal-backdrop" data-close></div>
         <div class="modal-content">
-            <button class="modal-close" aria-label="Close" data-close>&times;</button>
+            <!-- <button class="modal-close" aria-label="Close" data-close>&times;</button> -->
             <h3 id="donor-title" style="text-align:center;color:#c40024;">Donor Details</h3>
             <div id="donor-details" style="display:grid;gap:.5rem;">
                 <!-- details injected here -->
@@ -376,11 +376,88 @@
                 <p><strong>Email:</strong> ${escapeHtml(d.email||'')}</p>
                 <p><strong>City:</strong> ${escapeHtml(d.city||'')}</p>
                 <p><strong>Street:</strong> ${escapeHtml(d.street||'')}</p>
+                <div style="display:flex;gap:.6rem;margin-top:.6rem;">
+                    <button id="btn-request-contact" data-donor-id="${escapeHtml(d.id)}" class="submit-btn">Request to Contact</button>
+                </div>
             `;
             // open modal
             modal.hidden = false; modal.setAttribute('aria-hidden','false'); document.body.classList.add('no-scroll');
             setTimeout(()=>{ const first = modal.querySelector('button, a, input'); if(first) first.focus(); },80);
         }
+
+        // handle Request to Contact button
+        document.addEventListener('click', async (e)=>{
+            const btn = e.target.closest('#btn-request-contact');
+            if(!btn) return;
+            const donorId = btn.getAttribute('data-donor-id');
+            // try to get seeker info (session-based)
+            try{
+                const res = await fetch('/BloodDonation/get_seeker.php', { cache: 'no-store' });
+                const body = await res.json().catch(()=>null);
+                let seeker = null;
+                if (res.ok && body && body.success && body.seeker) {
+                    seeker = body.seeker;
+                }
+
+                // If seeker not found (not logged in), prompt the user for minimal info
+                if (!seeker) {
+                    const wantManual = confirm('You are not signed in as a seeker. Do you want to enter your name and contact now to send the request?');
+                    if (!wantManual) {
+                        // open profile modal as alternative
+                        const pm = document.getElementById('modal-profile'); if(pm){ pm.hidden = false; pm.setAttribute('aria-hidden','false'); document.body.classList.add('no-scroll'); }
+                        return;
+                    }
+                    const manualName = (prompt('Your full name') || '').trim();
+                    if (!manualName) { alert('Name is required'); return; }
+                    const manualCity = (prompt('Your city (optional)') || '').trim();
+                    const manualContact = (prompt('Your contact number (optional)') || '').trim();
+                    const manualEmail = (prompt('Your email (optional)') || '').trim();
+                    seeker = { first_name: manualName.split(' ')[0] || manualName, last_name: manualName.split(' ').slice(1).join(' '), city: manualCity, contact_number: manualContact, whatsapp_number: manualContact, email: manualEmail };
+                }
+
+                const fullName = ((seeker.first_name || '') + (seeker.last_name ? (' ' + seeker.last_name) : '')).trim() || 'Seeker';
+                const city = seeker.city || '';
+                const contact = seeker.contact_number || seeker.whatsapp_number || seeker.contact || '';
+                const email = seeker.email || '';
+                const title = 'Contact Request from Seeker';
+                const message = `${fullName} from ${city} (${contact}) requests to contact you.`;
+
+                const params = new URLSearchParams();
+                params.append('name', fullName);
+                params.append('mobile', contact);
+                params.append('email', email);
+                params.append('title', title);
+                params.append('message', message);
+                params.append('donor_id', donorId || '');
+
+                const p = await fetch('/BloodDonation/admin/admin_notifications_api.php', { method: 'POST', body: params });
+                // Try to parse JSON; if parsing fails, read text for debugging
+                let pb = null;
+                let rawText = null;
+                try {
+                    pb = await p.json();
+                } catch (parseErr) {
+                    try { rawText = await p.text(); } catch (tErr) { rawText = '<unable to read response body>'; }
+                    console.error('Failed to parse JSON response from notifications API', { status: p.status, text: rawText, parseErr });
+                }
+                if (p.ok && pb && pb.success) {
+                    let msg = 'Request sent to donor. The donor and admin will be notified.';
+                    if (pb.email_sent === true) msg += '\nAn email notification was also sent to the donor.';
+                    else if (pb.email_saved_log === true && pb.email_log_path) msg += '\nEmail could not be delivered by the server; the message was saved to the server log: ' + pb.email_log_path;
+                    else if (pb.email_sent === false && pb.donor_email) msg += '\nCould not send email to ' + pb.donor_email + ' (mail may not be configured on this server).';
+                    modal.hidden = true; modal.setAttribute('aria-hidden','true'); document.body.classList.remove('no-scroll');
+                    alert(msg);
+                } else {
+                    // show a more helpful message including server status and body when available
+                    console.error('Notification error', { status: p.status, json: pb, text: rawText });
+                    let errMsg = 'Failed to send request';
+                    if (pb && pb.error) errMsg = 'Failed: ' + pb.error;
+                    else if (rawText) errMsg = 'Failed to send request — server returned: ' + rawText;
+                    else errMsg = 'Failed to send request — server status ' + p.status;
+                    alert(errMsg);
+                }
+            }catch(err){ console.error(err); alert('Failed to send request'); }
+        });
 
         // initial load
         loadDonors();

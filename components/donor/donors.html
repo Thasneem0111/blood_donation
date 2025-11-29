@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>Find Blood Donors — BloodDonate</title>
+    <link rel="stylesheet" href="/BloodDonation/styles.css" />
+</head>
+<body>
+    <!-- Navbar (match bloodseeker.html) -->
+    <header class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="logo">Blood<span>Donate</span></div>
+            <nav class="nav-links" aria-label="Main navigation">
+                <a href="./donor.html">Home</a>
+                <a href="/BloodDonation/components/donor/donor.html#about">About Us</a>
+                <a href="#footer-contact">Contact Us</a>
+                <a href="./notifications.html">Notifications</a>
+                <a href="/BloodDonation/components/donor/donors.html">Donor</a>
+                <button id="btn-profile" title="Profile" aria-label="Profile" class="icon-button" style="background:none;border:none;margin-left:8px;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <main style="padding-top:78px;">
+        <section class="section" style="max-width:1100px;margin:0 auto;padding:2rem 1rem;">
+            <h1 style="color:#c40024; margin-bottom:0.6rem;">Find Blood Donors Near You</h1>
+            <p style="color:#444; margin-bottom:1rem;">Search donors by blood group and city. Click a donor to view full details and contact information.</p>
+
+            <div class="search-row" style="display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:1rem;">
+                <label style="flex:1 1 220px;">
+                    Blood Group
+                    <select id="filter-blood" style="width:100%;padding:.6rem;border-radius:8px;border:1px solid #ddd;">
+                        <option value="">Any</option>
+                        <option>A+</option>
+                        <option>A-</option>
+                        <option>B+</option>
+                        <option>B-</option>
+                        <option>AB+</option>
+                        <option>AB-</option>
+                        <option>O+</option>
+                        <option>O-</option>
+                    </select>
+                </label>
+
+                <label style="flex:1 1 220px;">
+                    City
+                    <input id="filter-city" placeholder="Any city" style="width:100%;padding:.6rem;border-radius:8px;border:1px solid #ddd;" />
+                </label>
+
+                <label style="flex:2 1 320px;">
+                    Search Name or Contact
+                    <input id="filter-term" placeholder="Search by name or number" style="width:100%;padding:.6rem;border-radius:8px;border:1px solid #ddd;" />
+                </label>
+
+                <div style="display:flex;align-items:flex-end;gap:.6rem;">
+                    <button id="btn-search" class="submit-btn" style="min-width:120px;padding:.6rem 1rem;">Search</button>
+                    <button id="btn-reset" class="submit-btn secondary" style="min-width:120px;padding:.6rem 1rem;">Reset</button>
+                </div>
+            </div>
+
+            <div id="donor-count" style="margin-bottom:.8rem;color:#444;font-weight:600;"></div>
+
+            <div id="donor-list" class="campaign-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1rem;">
+                <!-- donor cards inserted here -->
+            </div>
+        </section>
+
+        <!-- Campaigns Section (copied structure from main site) -->
+        <section id="campaigns" class="campaigns section" aria-labelledby="campaigns-heading">
+            <div class="campaigns-inner">
+                <h2 id="campaigns-heading">Blood Donation Campaign Events</h2>
+                <p class="campaigns-intro">Join our upcoming donation drives every donation brings hope. Browse events in your area, check dates 
+                    and times, and bring a friend. Together we can reach more donors and ensure steady blood supplies for hospitals and emergency 
+                    care.</p>
+
+                <div class="campaign-grid">
+                    <article class="campaign-card">
+                        <div class="campaign-media">
+                            <img src="/BloodDonation/images/donation4.jpg" alt="Community blood donation drive" />
+                        </div>
+                        <div class="campaign-body">
+                            <h3>City Center Drive</h3>
+                            <p>Free screening and refreshments. Walk-ins welcome we need all blood groups to support local hospitals.</p>
+                        </div>
+                    </article>
+                    <article class="campaign-card">
+                        <div class="campaign-media">
+                            <img src="/BloodDonation/images/donation5.webp" alt="Hospital blood donation event" />
+                        </div>
+                        <div class="campaign-body">
+                            <h3>Hospital Partnership Event</h3>
+                            <p>Organized with City Hospital: scheduled appointments to ensure safe, efficient collection and donor care.</p>
+                        </div>
+                    </article>
+                    <article class="campaign-card">
+                        <div class="campaign-media">
+                            <img src="/BloodDonation/images/donation6.jpg" alt="Mobile blood donation unit" />
+                        </div>
+                        <div class="campaign-body">
+                            <h3>Mobile Unit Visit</h3>
+                            <p>Our mobile unit will visit neighborhoods book a slot or stop by when we arrive to donate on the go.</p>
+                        </div>
+                    </article>
+                    <article class="campaign-card">
+                        <div class="campaign-media">
+                            <img src="/BloodDonation/images/donation7.jpg" alt="University campus blood donation drive" />
+                        </div>
+                        <div class="campaign-body">
+                            <h3>University Campus Drive</h3>
+                            <p>Students and staff encouraged to participate campus collection with quick donations and fun giveaways.</p>
+                        </div>
+                    </article>
+                    <article class="campaign-card">
+                        <div class="campaign-media">
+                            <img src="/BloodDonation/images/donation8.jpg" alt="Corporate blood donation event" />
+                        </div>
+                        <div class="campaign-body">
+                            <h3>Corporate Day of Giving</h3>
+                            <p>Partnering with local businesses to host a workplace drive encourage colleagues to donate and save lives.</p>
+                        </div>
+                    </article>
+                    <article class="campaign-card">
+                        <div class="campaign-media">
+                            <img src="/BloodDonation/images/donation9.jpg" alt="Neighborhood blood donation awareness campaign" />
+                        </div>
+                        <div class="campaign-body">
+                            <h3>Neighborhood Awareness Campaign</h3>
+                            <p>Educational booths, donor stories, and onsite collection to raise awareness and make it easy to give.</p>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Donor details modal -->
+    <div class="modal" id="modal-donor" role="dialog" aria-modal="true" aria-labelledby="donor-title" hidden>
+        <div class="modal-backdrop" data-close></div>
+        <div class="modal-content">
+            <button class="modal-close" aria-label="Close" data-close>&times;</button>
+            <h3 id="donor-title" style="text-align:center;color:#c40024;">Donor Details</h3>
+            <div id="donor-details" style="display:grid;gap:.5rem;">
+                <!-- details injected here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer (reuse main site's footer) -->
+    <footer id="footer-contact" class="site-footer" aria-labelledby="footer-heading">
+        <div class="footer-top">
+            <div class="footer-text">
+                <h3 id="footer-heading">Join the Lifesaving Network</h3>
+                <p>Together we can make sure that when a call for blood comes, the answer is immediate. Register, reach out, or simply start a conversation. Your involvement today protects a life tomorrow.</p>
+                <div class="socials" aria-label="Social media links">
+                    <a href="#" class="social whatsapp" aria-label="WhatsApp" title="WhatsApp">
+                        <!-- WhatsApp SVG -->
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.52 3.48A11.88 11.88 0 0 0 12.02.5 11.98 11.98 0 0 0 .5 12c0 2.12.55 4.09 1.6 5.84L.5 23.5l5.9-1.55A11.95 11.95 0 0 0 12.02 24c6.63 0 11.98-5.37 11.98-12 0-3.2-1.24-6.14-3.48-8.52zM12.02 21.5a9.42 9.42 0 0 1-4.84-1.31l-.35-.21-3.51.93.94-3.43-.23-.38A9.4 9.4 0 1 1 21.44 12 9.4 9.4 0 0 1 12.02 21.5z"/></svg>
+                    </a>
+                    <a href="#" class="social instagram" aria-label="Instagram" title="Instagram">
+                        <!-- Instagram SVG -->
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5zm0 2a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H7zm5 3.5A4.5 4.5 0 1 1 7.5 12 4.5 4.5 0 0 1 12 7.5zm0 2A2.5 2.5 0 1 0 14.5 12 2.5 2.5 0 0 0 12 9.5zM18.5 6a.9.9 0 1 1 0 1.8.9.9 0 0 1 0-1.8z"/></svg>
+                    </a>
+                    <a href="#" class="social tiktok" aria-label="TikTok" title="TikTok">
+                        <!-- TikTok SVG (simple note icon) -->
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3v10.5A3.5 3.5 0 1 0 15.5 17V8h3V5h-6z"/></svg>
+                    </a>
+                    <a href="#" class="social linkedin" aria-label="LinkedIn" title="LinkedIn">
+                        <!-- LinkedIn SVG -->
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 8.98h4v12H3v-12zM9 8.98h3.6v1.64h.05c.5-.95 1.72-1.95 3.55-1.95 3.8 0 4.5 2.5 4.5 5.75v6.56H17v-5.83c0-1.39-.02-3.18-1.94-3.18-1.94 0-2.24 1.52-2.24 3.07v5.94H9v-12z"/></svg>
+                    </a>
+                </div>
+            </div>
+            <form class="contact-form" action="#" method="post" aria-label="Contact form">
+                <h3>Contact Us</h3>
+                <label>Full Name
+                    <input type="text" name="name" required placeholder="Your name" />
+                </label>
+                <label>Mobile Number
+                    <input type="tel" name="mobile" required pattern="[+0-9\s-]{7,}" placeholder="e.g. +1 555 123 4567" />
+                </label>
+                <label>Email
+                    <input type="email" name="email" required placeholder="you@example.com" />
+                </label>
+                <button type="submit" class="submit-btn">Submit</button>
+            </form>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 BloodDonate. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="/BloodDonation/script.js"></script>
+    <!-- Profile modal -->
+    <div class="modal profile-modal" id="modal-profile" role="dialog" aria-modal="true" aria-labelledby="profile-title" hidden>
+        <div class="modal-backdrop" data-close></div>
+        <div class="modal-content" style="max-width:640px;">
+            <button class="modal-close" aria-label="Close" data-close>&times;</button>
+            <h3 id="profile-title" style="text-align:center;color:#c40024;">Donor Profile</h3>
+            <div id="profile-body">
+                <p>Enter your registered email to load/update your donor details.</p>
+                <label>Email
+                    <input id="profile-email" type="email" placeholder="you@example.com" style="width:100%;padding:.6rem;border-radius:6px;border:1px solid #ddd;" />
+                </label>
+                <div style="display:flex;gap:.6rem;margin-top:.5rem;">
+                    <button id="profile-load" class="submit-btn">Load Details</button>
+                </div>
+
+                <form id="profile-form" style="margin-top:1rem;display:none;" novalidate>
+                    <input type="hidden" id="originalEmail" name="originalEmail" />
+                    <div class="field-row">
+                        <label>First Name<input id="seekerFirstName" name="seekerFirstName" type="text" /></label>
+                        <label>Last Name<input id="seekerLastName" name="seekerLastName" type="text" /></label>
+                    </div>
+                    <div class="field-row">
+                        <label>Age<input id="seekerAge" name="seekerAge" type="number" min="0" max="120" /></label>
+                        <label>NIC<input id="seekerNic" name="seekerNic" type="text" /></label>
+                    </div>
+                    <div class="field-row">
+                        <label>Contact<input id="seekerContact" name="seekerContact" type="tel" /></label>
+                        <label>WhatsApp<input id="seekerWhatsapp" name="whatsapp" type="tel" /></label>
+                        <label>Email<input id="seekerEmail" name="seekerEmail" type="email" /></label>
+                    </div>
+                    <div class="field-row">
+                        <label>Street<input id="seekerStreet" name="street" type="text" /></label>
+                        <label>City<input id="seekerCity" name="city" type="text" /></label>
+                    </div>
+                    <label>Password (leave blank to keep current)<input id="seekerPassword" name="password" type="password" /></label>
+                    <div style="display:flex;gap:.6rem;margin-top:.6rem;">
+                        <button id="profile-save" class="submit-btn" type="button">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+    // Page-specific donor logic
+    (function(){
+        const donorList = document.getElementById('donor-list');
+        const donorCount = document.getElementById('donor-count');
+        const filterBlood = document.getElementById('filter-blood');
+        const filterCity = document.getElementById('filter-city');
+        const filterTerm = document.getElementById('filter-term');
+        const btnSearch = document.getElementById('btn-search');
+        const btnReset = document.getElementById('btn-reset');
+        const modal = document.getElementById('modal-donor');
+        const details = document.getElementById('donor-details');
+
+        let donors = [];
+
+        async function loadDonors(){
+            donorList.innerHTML = '<p style="grid-column:1/-1;color:#666;">Loading donors…</p>';
+            donorCount.textContent = '';
+            try{
+                const res = await fetch('/BloodDonation/get_donors.php', {cache: 'no-store'});
+                // try to parse JSON body even on non-2xx so we can surface server errors
+                let body;
+                try {
+                    body = await res.json();
+                } catch(parseErr){
+                    throw new Error('invalid-json');
+                }
+                if(!res.ok){
+                    // server returned error payload
+                    const msg = body && (body.message || body.error) ? (body.message || body.error) + (body.error && body.message ? (': '+body.error) : '') : 'server error';
+                    throw new Error(msg);
+                }
+                donors = Array.isArray(body) ? body : [];
+            }catch(err){
+                // show error message and stop
+                donorList.innerHTML = '<p style="grid-column:1/-1;color:#c40024;font-weight:700;">Unable to load donors from server.</p>';
+                donorCount.textContent = '';
+                console.error('Failed to load donors:', err);
+                return;
+            }
+            if(donors.length === 0){
+                donorList.innerHTML = '<p style="grid-column:1/-1;color:#666;">No registered donors found.</p>';
+                donorCount.textContent = '0 donor(s) found';
+                return;
+            }
+            renderDonors(donors);
+        }
+
+        function normalizePhoneForLink(phone){
+            if(!phone) return '';
+            // keep + and digits for tel, strip other chars
+            const cleaned = String(phone).trim().replace(/[^+\d]/g,'');
+            return cleaned;
+        }
+
+        function whatsappLink(phone){
+            if(!phone) return '';
+            // whatsapp uses international format without + or leading zeros
+            let digits = String(phone).replace(/\D/g,'');
+            if(digits.length === 0) return '';
+            // If phone starts with 0 and no country code, leave as-is — user should ensure correct format
+            return 'https://wa.me/' + digits;
+        }
+
+        function renderDonors(list){
+            donorList.innerHTML = '';
+            donorCount.textContent = list.length + ' donor(s) found';
+            list.forEach(d => {
+                const card = document.createElement('article');
+                card.className = 'campaign-card';
+
+                const contactVal = d.contact || d.whatsapp || '';
+                const contactHref = contactVal ? ('tel:' + normalizePhoneForLink(contactVal)) : '';
+                const whatsappVal = d.whatsapp || d.contact || '';
+                const waHref = whatsappVal ? whatsappLink(whatsappVal) : '';
+
+                const contactHtml = contactVal ? (contactHref ? `<a href="${contactHref}">${escapeHtml(contactVal)}</a>` : escapeHtml(contactVal)) : '<span style="color:#666;">—</span>';
+                const waHtml = whatsappVal ? (waHref ? `<a target="_blank" rel="noopener" href="${waHref}">${escapeHtml(whatsappVal)}</a>` : escapeHtml(whatsappVal)) : '<span style="color:#666;">—</span>';
+
+                card.innerHTML = `
+                    <div class="campaign-media"><img src="/BloodDonation/images/donation1.jpg" alt="donor" /></div>
+                    <div class="campaign-body">
+                        <h3>${escapeHtml(d.firstName + ' ' + (d.lastName||''))}</h3>
+                        <p><strong>Blood:</strong> ${escapeHtml(d.blood_group || '')} &nbsp; <strong>City:</strong> ${escapeHtml(d.city || '')}</p>
+                        <p><strong>Contact:</strong> ${contactHtml} &nbsp; <strong>WhatsApp:</strong> ${waHtml}</p>
+                        <div style="margin-top:.6rem;"><button class="submit-btn" data-id="${d.id}">View Details</button></div>
+                    </div>
+                `;
+                donorList.appendChild(card);
+            });
+        }
+
+        function escapeHtml(str){ return String(str||'').replace(/[&<>\"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":"&#39;"})[s]); }
+
+        function applyFilters(){
+            const bg = filterBlood.value.trim();
+            const city = filterCity.value.trim().toLowerCase();
+            const term = filterTerm.value.trim().toLowerCase();
+            const filtered = donors.filter(d => {
+                if(bg && (d.blood_group||'').toLowerCase() !== bg.toLowerCase()) return false;
+                if(city && ((d.city||'').toLowerCase().indexOf(city)===-1)) return false;
+                if(term){
+                    const hay = (d.firstName+' '+(d.lastName||'')+' '+(d.contact||'')+' '+(d.city||'')).toLowerCase();
+                    if(hay.indexOf(term)===-1) return false;
+                }
+                return true;
+            });
+            renderDonors(filtered);
+        }
+
+        btnSearch.addEventListener('click', (e)=>{ e.preventDefault(); applyFilters(); });
+        btnReset.addEventListener('click', (e)=>{ e.preventDefault(); filterBlood.value=''; filterCity.value=''; filterTerm.value=''; renderDonors(donors); });
+
+        donorList.addEventListener('click', (e)=>{
+            const btn = e.target.closest('button[data-id]');
+            if(!btn) return;
+            const id = btn.getAttribute('data-id');
+            const donor = donors.find(x=>String(x.id)===String(id));
+            if(!donor) return;
+            showDonorDetails(donor);
+        });
+
+        function showDonorDetails(d){
+            const contactVal = d.contact || d.whatsapp || '';
+            const contactHref = contactVal ? ('tel:' + normalizePhoneForLink(contactVal)) : '';
+            const whatsappVal = d.whatsapp || d.contact || '';
+            const waHref = whatsappVal ? whatsappLink(whatsappVal) : '';
+
+            const contactHtml = contactVal ? (contactHref ? `<a href="${contactHref}">${escapeHtml(contactVal)}</a>` : escapeHtml(contactVal)) : '<span style="color:#666;">—</span>';
+            const waHtml = whatsappVal ? (waHref ? `<a target="_blank" rel="noopener" href="${waHref}">${escapeHtml(whatsappVal)}</a>` : escapeHtml(whatsappVal)) : '<span style="color:#666;">—</span>';
+
+            details.innerHTML = `
+                <p><strong>Name:</strong> ${escapeHtml(d.firstName+' '+(d.lastName||''))}</p>
+                <p><strong>Blood Group:</strong> ${escapeHtml(d.blood_group||'')}</p>
+                <p><strong>Age:</strong> ${escapeHtml(d.age||'')}</p>
+                <p><strong>NIC/ID:</strong> ${escapeHtml(d.nic||'')}</p>
+                <p><strong>Contact:</strong> ${contactHtml}</p>
+                <p><strong>WhatsApp:</strong> ${waHtml}</p>
+                <p><strong>Email:</strong> ${escapeHtml(d.email||'')}</p>
+                <p><strong>City:</strong> ${escapeHtml(d.city||'')}</p>
+                <p><strong>Street:</strong> ${escapeHtml(d.street||'')}</p>
+            `;
+            // open modal
+            modal.hidden = false; modal.setAttribute('aria-hidden','false'); document.body.classList.add('no-scroll');
+            setTimeout(()=>{ const first = modal.querySelector('button, a, input'); if(first) first.focus(); },80);
+        }
+
+        // initial load
+        loadDonors();
+    })();
+    </script>
+    <script>
+    // Profile modal handlers for seeker (load and update)
+    (function(){
+        const btnProfile = document.getElementById('btn-profile');
+        const modal = document.getElementById('modal-profile');
+        const profileLoad = document.getElementById('profile-load');
+        const profileEmail = document.getElementById('profile-email');
+        const profileForm = document.getElementById('profile-form');
+        const originalEmailInput = document.getElementById('originalEmail');
+
+        function openModal(){ modal.hidden = false; modal.setAttribute('aria-hidden','false'); document.body.classList.add('no-scroll'); }
+        function closeModal(){ modal.hidden = true; modal.setAttribute('aria-hidden','true'); document.body.classList.remove('no-scroll'); }
+
+        document.addEventListener('click', (e)=>{
+            if(e.target.closest('[data-close]') || e.target.closest('.modal-close')) closeModal();
+        });
+
+        if(btnProfile) btnProfile.addEventListener('click', (e)=>{ e.preventDefault(); openModal(); });
+
+        profileLoad.addEventListener('click', async (e)=>{
+            e.preventDefault();
+            profileLoad.disabled = true; profileLoad.textContent = 'Loading…';
+            try{
+                // First, try session-based fetch (no email param). Server will return 400 if not logged in.
+                let res = await fetch('/BloodDonation/get_donor.php', { cache: 'no-store' });
+                let body = await res.json().catch(()=>null);
+                if (!res.ok || !body || !body.success) {
+                    // fallback: try using entered email if provided
+                    const email = profileEmail.value.trim();
+                    if (!email) {
+                        alert(body && body.message ? body.message : 'Not logged in and no email provided');
+                        return;
+                    }
+                    res = await fetch('/BloodDonation/get_donor.php?email=' + encodeURIComponent(email));
+                    body = await res.json();
+                    if(!res.ok || !body.success){ alert(body.message || 'Not found'); return; }
+                }
+                const s = body.donor || body.seeker || {};
+                // populate form
+                originalEmailInput.value = s.email || profileEmail.value.trim();
+                document.getElementById('seekerFirstName').value = s.first_name || s.firstName || '';
+                document.getElementById('seekerLastName').value = s.last_name || s.lastName || '';
+                document.getElementById('seekerAge').value = s.age || '';
+                document.getElementById('seekerNic').value = s.nic || '';
+                document.getElementById('seekerContact').value = s.contact_number || s.contact || '';
+                document.getElementById('seekerWhatsapp').value = s.whatsapp_number || s.whatsapp || '';
+                document.getElementById('seekerEmail').value = s.email || '';
+                document.getElementById('seekerStreet').value = s.street || '';
+                document.getElementById('seekerCity').value = s.city || '';
+                profileForm.style.display = 'block';
+            } catch(err){ console.error(err); alert('Unable to load seeker details'); }
+            finally { profileLoad.disabled = false; profileLoad.textContent = 'Load Details'; }
+        });
+
+        document.getElementById('profile-save').addEventListener('click', async (e)=>{
+            e.preventDefault();
+            const data = new FormData(profileForm);
+            data.append('originalEmail', originalEmailInput.value || profileEmail.value.trim());
+            try{
+                const res = await fetch('/BloodDonation/update_seeker.php', { method: 'POST', body: data });
+                const body = await res.json();
+                if(body.success){ alert('Profile updated'); }
+                else alert(body.message || 'Update failed');
+            } catch(err){ console.error(err); alert('Update failed'); }
+        });
+
+        // Auto-open profile when returning from auth (login/registration)
+        document.addEventListener('DOMContentLoaded', () => {
+            try {
+                const storedEmail = localStorage.getItem('userEmail');
+                const showNext = localStorage.getItem('showProfileOnNextLoad');
+                if (storedEmail && showNext) {
+                    // hide inline email input row if present
+                    const emailRow = document.querySelector('#modal-profile .email-row');
+                    if (emailRow) emailRow.style.display = 'none';
+                    // set the profile email field
+                    if (profileEmail) profileEmail.value = storedEmail;
+
+                    const modalEl = document.getElementById('modal-profile');
+                    // Try session-based fetch first (server will return seeker for logged-in seeker)
+                    fetch(location.origin + '/BloodDonation/get_donor.php', { cache: 'no-store' }).then(async (res) => {
+                        let body = null;
+                        try { body = await res.json(); } catch(e) { body = null; }
+                        if (!res.ok || !body || !body.success) {
+                            // fallback to using storedEmail if available
+                            const looksLikeEmail = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(storedEmail);
+                            if (!looksLikeEmail) {
+                                if (modalEl) { modalEl.hidden = false; modalEl.setAttribute('aria-hidden','false'); document.body.classList.add('no-scroll'); }
+                                localStorage.removeItem('showProfileOnNextLoad');
+                                return;
+                            }
+                            const url = location.origin + '/BloodDonation/get_donor.php?email=' + encodeURIComponent(storedEmail);
+                            const res2 = await fetch(url, { cache: 'no-store' });
+                            if (!res2.ok) { if (modalEl) { modalEl.hidden = false; modalEl.setAttribute('aria-hidden','false'); document.body.classList.add('no-scroll'); } return; }
+                            body = await res2.json();
+                            if (!body || !body.success) { if (modalEl) { modalEl.hidden = false; modalEl.setAttribute('aria-hidden','false'); document.body.classList.add('no-scroll'); } return; }
+                        }
+                        const s = body.seeker || {};
+                        originalEmailInput.value = s.email || storedEmail;
+                        document.getElementById('seekerFirstName').value = s.first_name || '';
+                        document.getElementById('seekerLastName').value = s.last_name || '';
+                        document.getElementById('seekerAge').value = s.age || '';
+                        document.getElementById('seekerNic').value = s.nic || '';
+                        document.getElementById('seekerContact').value = s.contact_number || '';
+                        document.getElementById('seekerWhatsapp').value = s.whatsapp_number || '';
+                        document.getElementById('seekerEmail').value = s.email || '';
+                        document.getElementById('seekerStreet').value = s.street || '';
+                        document.getElementById('seekerCity').value = s.city || '';
+                        profileForm.style.display = 'block';
+                        if (modalEl) { modalEl.hidden = false; modalEl.setAttribute('aria-hidden','false'); document.body.classList.add('no-scroll'); }
+                    }).catch(err => {
+                        console.warn('auto profile fetch failed', err);
+                        if (modalEl) { modalEl.hidden = false; modalEl.setAttribute('aria-hidden','false'); document.body.classList.add('no-scroll'); }
+                    }).finally(() => localStorage.removeItem('showProfileOnNextLoad'));
+                }
+            } catch (e) { console.warn('auto profile load failed', e); }
+        });
+    })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+---
+2025-11-29 10:42:42
+TO: thasneemmarsook0111@gmail.com
+SUBJECT: Contact Request from Seeker
+HEADERS: From: no-reply@blooddonate.local
+MIME-Version: 1.0
+Content-type: text/plain; charset=utf-8
+Reply-To: thasneemsuha1128@gmail.com
+
+From: Fathima Suha Mohamed Thasneem
+Email: thasneemsuha1128@gmail.com
+Contact: +94743011128
+
+Fathima Suha Mohamed Thasneem from Ninthavur (+94743011128) requests to contact you.
+
+You can also sign in to your donor account to view all notifications:
+http://localhost/BloodDonation/components/donor/notifications.html
+---
+

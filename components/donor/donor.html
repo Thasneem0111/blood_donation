@@ -56,9 +56,10 @@
         <div class="nav-container">
             <div class="logo">Blood<span>Donate</span></div>
             <nav class="nav-links" aria-label="Main navigation">
-                <a href="/BloodDonation/components/bloodseeker/bloodseeker.html#home">Home</a>
-                <a href="/BloodDonation/components/bloodseeker/bloodseeker.html#about">About Us</a>
-                <a href="/BloodDonation/components/bloodseeker/bloodseeker.html#footer-contact">Contact Us</a>
+                <a href="./donor.html">Home</a>
+                <a href="#about">About Us</a>
+                <a href="#footer-contact">Contact Us</a>
+                <a href="./notifications.html">Notifications</a>
                 <a href="./donors.html">Donors</a>
                 <button id="btn-profile" title="Profile" aria-label="Profile" class="icon-button" style="background:none;border:none;margin-left:8px;">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
@@ -241,9 +242,9 @@
         <div class="modal-backdrop" data-close></div>
         <div class="modal-content" style="max-width:640px;">
             <button class="modal-close" aria-label="Close" data-close>&times;</button>
-            <h3 id="profile-title" style="text-align:center;color:#c40024;">Seeker Profile</h3>
+            <h3 id="profile-title" style="text-align:center;color:#c40024;">Donor Profile</h3>
             <div id="profile-body">
-                <p>Enter your registered email to load/update your seeker details.</p>
+                <p>Enter your registered email to load/update your donor details.</p>
                 <label>Email
                     <input id="profile-email" type="email" placeholder="you@example.com" style="width:100%;padding:.6rem;border-radius:6px;border:1px solid #ddd;" />
                 </label>
@@ -300,24 +301,24 @@
             e.preventDefault();
             profileLoad.disabled = true; profileLoad.textContent = 'Loading…';
             try{
-                // Try session-based fetch first
-                let res = await fetch('/BloodDonation/get_seeker.php', { cache: 'no-store' });
+                // Try session-based fetch first (donor endpoint)
+                let res = await fetch('/BloodDonation/get_donor.php', { cache: 'no-store' });
                 let body = await res.json().catch(()=>null);
                 if (!res.ok || !body || !body.success) {
                     const email = profileEmail.value.trim();
                     if (!email) { alert(body && body.message ? body.message : 'Not logged in and no email provided'); return; }
-                    res = await fetch('/BloodDonation/get_seeker.php?email=' + encodeURIComponent(email));
+                    res = await fetch('/BloodDonation/get_donor.php?email=' + encodeURIComponent(email));
                     body = await res.json();
                     if(!res.ok || !body.success){ alert(body.message || 'Not found'); return; }
                 }
-                const s = body.seeker;
+                const s = body.donor || body.seeker || {};
                 originalEmailInput.value = s.email || profileEmail.value.trim();
-                document.getElementById('seekerFirstName').value = s.first_name || '';
-                document.getElementById('seekerLastName').value = s.last_name || '';
+                document.getElementById('seekerFirstName').value = s.first_name || s.firstName || '';
+                document.getElementById('seekerLastName').value = s.last_name || s.lastName || '';
                 document.getElementById('seekerAge').value = s.age || '';
                 document.getElementById('seekerNic').value = s.nic || '';
-                document.getElementById('seekerContact').value = s.contact_number || '';
-                document.getElementById('seekerWhatsapp').value = s.whatsapp_number || '';
+                document.getElementById('seekerContact').value = s.contact_number || s.contact || '';
+                document.getElementById('seekerWhatsapp').value = s.whatsapp_number || s.whatsapp || '';
                 document.getElementById('seekerEmail').value = s.email || '';
                 document.getElementById('seekerStreet').value = s.street || '';
                 document.getElementById('seekerCity').value = s.city || '';
@@ -350,13 +351,13 @@
 
                     const modalEl = document.getElementById('modal-profile');
                     // Try session-based fetch first
-                    fetch(location.origin + '/BloodDonation/get_seeker.php', { cache: 'no-store' }).then(async (res) => {
+                    fetch(location.origin + '/BloodDonation/get_donor.php', { cache: 'no-store' }).then(async (res) => {
                         let body = null;
                         try { body = await res.json(); } catch(e) { body = null; }
                         if (!res.ok || !body || !body.success) {
                             const looksLikeEmail = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(storedEmail);
                             if (!looksLikeEmail) { if (modalEl) { modalEl.hidden = false; modalEl.setAttribute('aria-hidden','false'); document.body.classList.add('no-scroll'); } localStorage.removeItem('showProfileOnNextLoad'); return; }
-                            const url = location.origin + '/BloodDonation/get_seeker.php?email=' + encodeURIComponent(storedEmail);
+                            const url = location.origin + '/BloodDonation/get_donor.php?email=' + encodeURIComponent(storedEmail);
                             const res2 = await fetch(url, { cache: 'no-store' });
                             if (!res2.ok) { if (modalEl) { modalEl.hidden = false; modalEl.setAttribute('aria-hidden','false'); document.body.classList.add('no-scroll'); } return; }
                             body = await res2.json();

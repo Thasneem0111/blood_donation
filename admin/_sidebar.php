@@ -7,6 +7,9 @@ function navItem($href, $label, $current){
     return "<a class=\"$cls\" href=\"$href\">$label</a>";
 }
 ?>
+<style>
+  .admin-sidebar a{ text-decoration:none; }
+</style>
 <aside class="admin-sidebar" role="navigation">
   <h3 style="margin-bottom:1rem;">Admin</h3>
   <?= navItem('dashboard.php', '🏠 Dashboard', $current) ?>

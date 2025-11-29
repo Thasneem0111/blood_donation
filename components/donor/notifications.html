@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Donor — Notifications</title>
+  <link rel="stylesheet" href="/BloodDonation/styles.css">
+  <style>.container{padding:1rem}.notif{padding:.6rem;border-bottom:1px solid #eee}</style>
+</head>
+<body>
+  <header class="navbar" id="navbar">
+    <div class="nav-container">
+      <div class="logo">Blood<span>Donate</span></div>
+      <nav class="nav-links">
+        <a href="./donor.html">Home</a>
+        <a href="./donors.html">Donors</a>
+        <a href="./notifications.html">Notifications</a>
+      </nav>
+    </div>
+  </header>
+  <main style="padding-top:78px;max-width:900px;margin:0 auto;">
+    <h2 style="padding:1rem 1rem 0 1rem;">Your Notifications</h2>
+    <div class="container">
+      <div id="notifs"></div>
+      <div id="no-notifs" style="color:#666;margin-top:1rem;display:none;">No notifications.</div>
+    </div>
+  </main>
+
+<script>
+async function loadForDonor(donorId){
+  const el = document.getElementById('notifs'); el.innerHTML = '';
+  try{
+    const res = await fetch('/BloodDonation/admin/admin_notifications_api.php?donor_id=' + encodeURIComponent(donorId));
+    const b = await res.json();
+    const list = (b.notifications||[]);
+    if(list.length === 0){ document.getElementById('no-notifs').style.display='block'; return; }
+    document.getElementById('no-notifs').style.display='none';
+    list.forEach(n=>{
+      const d = document.createElement('div'); d.className='notif';
+      const who = n.full_name || n.title || '';
+      const em = n.email ? `<div><strong>Email:</strong> ${escapeHtml(n.email)}</div>` : '';
+      const phone = n.contact_number ? `<div><strong>Contact:</strong> ${escapeHtml(n.contact_number)}</div>` : '';
+      const msg = n.message ? `<div>${escapeHtml(n.message)}</div>` : '';
+      const created = n.created_at ? `<div style="color:#666;font-size:.85rem">${escapeHtml(n.created_at)}</div>` : '';
+      d.innerHTML = `<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;">` +
+                    `<div style="flex:1;">` +
+                    `<strong>${escapeHtml(who)}</strong> ${em} ${phone} ${msg} ${created}` +
+                    `</div>` +
+                    `</div>`;
+      el.appendChild(d);
+    });
+  }catch(err){ console.error(err); document.getElementById('notifs').innerHTML = '<p style="color:#c40024;">Unable to load notifications.</p>'; }
+}
+    function escapeHtml(s){ if(!s) return ''; return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"})[c]); }
+
+    // Try to get logged-in donor via session; fall back to prompting for email
+    (async function(){
+      try{
+        const r = await fetch('/BloodDonation/get_donor.php', { cache: 'no-store' });
+        const b = await r.json().catch(()=>null);
+        if (r.ok && b && b.success && b.donor){
+          const id = b.donor.id || (b.donor.raw && b.donor.raw.id) || b.donor.ID || null;
+          if (id) { loadForDonor(id); return; }
+        }
+        // not logged in: ask email
+        const email = prompt('Enter your registered donor email to load notifications');
+        if(!email) return;
+        const r2 = await fetch('/BloodDonation/get_donor.php?email=' + encodeURIComponent(email));
+        const b2 = await r2.json();
+        if(!r2.ok || !b2.success){ alert(b2.message || 'Donor not found'); return; }
+        const id2 = b2.donor.id || (b2.donor.raw && b2.donor.raw.id) || b2.donor.ID || null;
+        if (id2) loadForDonor(id2);
+      }catch(err){ console.error(err); document.getElementById('notifs').innerHTML = '<p style="color:#c40024;">Unable to load notifications.</p>'; }
+    })();
+
+    </script>
+    </body>
+    </html>
